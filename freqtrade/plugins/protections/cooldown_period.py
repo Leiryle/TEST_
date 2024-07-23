@@ -18,13 +18,13 @@ class CooldownPeriod(IProtection):
         """
         LockReason to use
         """
-        return f"Cooldown period for {self.stop_duration_str}."
+        return f"Cooldown period for {self.unlock_reason_time_element}."
 
     def short_desc(self) -> str:
         """
-        Short method description - used for startup-messages
+        Short method description - used for startup messages
         """
-        return f"{self.name} - Cooldown period of {self.stop_duration_str}."
+        return f"{self.name} - Cooldown period {self.unlock_reason_time_element}."
 
     def _cooldown_period(self, pair: str, date_now: datetime) -> Optional[ProtectionReturn]:
         """
@@ -43,7 +43,7 @@ class CooldownPeriod(IProtection):
             # Ignore type error as we know we only get closed trades.
             trade = sorted(trades, key=lambda t: t.close_date)[-1]  # type: ignore
             self.log_once(f"Cooldown for {pair} for {self.stop_duration_str}.", logger.info)
-            until = self.calculate_lock_end([trade], self._stop_duration)
+            until = self.calculate_lock_end([trade])
 
             return ProtectionReturn(
                 lock=True,
